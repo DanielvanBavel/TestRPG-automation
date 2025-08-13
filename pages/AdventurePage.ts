@@ -7,9 +7,9 @@ export class AdventurePage {
 	private slider: Locator;
 
   	constructor(private page: Page) {
-		this.uploadInput = page.locator('[data-testid="adventure-uploader"] input[type="file"]');
-		this.typeInput = page.locator('[data-testid="adventure-typer"] input');
-		this.slider = this.page.locator('[data-testid="adventure-slider"] [role="slider"]');
+		this.uploadInput 	= page.locator('[data-testid="adventure-uploader"] input[type="file"]');
+		this.typeInput 		= page.locator('[data-testid="adventure-typer"] input');
+		this.slider 		= page.locator('[data-testid="adventure-slider"] [role="slider"]');
   	}
 
   	async clickButtonFiveTimes() {
