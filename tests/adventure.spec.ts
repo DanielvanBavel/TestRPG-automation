@@ -12,14 +12,27 @@ test.beforeEach(async ({ page }) => {
   await character.selectBuild('Brigadier');
   await character.clickStart();
 
-  adventure = new AdventurePage(page); // pas na clickStart
+  adventure = new AdventurePage(page); 
 });
 
-test('Voltooi adventure taken', async ({ page }) => {
-  await adventure.clickButtonFiveTimes();
-  await adventure.uploadDummyFile();
-  await adventure.typeLoremIpsum();
-  await adventure.slideToRight();
+test('Complete adventure tasks', async () => {
+  await test.step('Click the button five times', async () => {
+    await adventure.clickButtonFiveTimes();
+  });
 
-  await adventure.expertLevelReached();
+  await test.step('Upload a dummy file', async () => {
+    await adventure.uploadDummyFile();
+  });
+
+  await test.step('Type the required phrase', async () => {
+    await adventure.typeLoremIpsum();
+  });
+
+  await test.step('Slide to the maximum value', async () => {
+    await adventure.slideToMaximum();
+  });
+
+  await test.step('Verify expert level reached', async () => {
+    await adventure.expertLevelReached();
+  });
 });

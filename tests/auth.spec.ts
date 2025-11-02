@@ -1,31 +1,20 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { AuthManager } from '../pages/AuthManager';
 import { getRandomUser } from './utils/testUtils';
 
 test('Login', async ({ page }) => {
-
 	const authManager = new AuthManager(page)
 	const { email, password } = getRandomUser();
-	
-	await page.goto('/play');
 
-  	await authManager.OpenLoginModal();
-	await authManager.setEmail(email);
-	await authManager.setPassword(password);
-	await authManager.ClickLoginButton();
-});
+	await test.step('Navigate to play', async () => {
+		await page.goto('/play');
+	});
 
-test('Logout', async ({ page }) => {
+	await test.step('Login with valid user', async () => {
+		await authManager.loginUser(email, password);
+	});
 
-	const authManager = new AuthManager(page)
-	const { email, password } = getRandomUser();
-	
-	await page.goto('/play');
-
-  	await authManager.OpenLoginModal();
-	await authManager.setEmail(email);
-	await authManager.setPassword(password);
-	await authManager.ClickLoginButton();
-
-	await authManager.ClickLogoutButton();
+	await test.step('Verify logged in state', async () => {
+		await expect(page.getByTestId('logout-button')).toBeVisible();
+	});
 });

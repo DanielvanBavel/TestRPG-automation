@@ -1,12 +1,12 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 export class CharacterPage {
-	private nameInput: Locator;
-  	private buildDropdownButton : Locator;
-  	private startButton: Locator;
-  	private characterTitle: Locator;
+	private readonly nameInput: Locator;
+  	private readonly buildDropdownButton : Locator;
+  	private readonly startButton: Locator;
+  	private readonly characterTitle: Locator;
 
-  	constructor(private page: Page) {
+  	constructor(private readonly page: Page) {
     	this.nameInput 				= page.getByPlaceholder('Galactic space lord');
     	this.buildDropdownButton  	= page.getByRole('combobox');
 		this.startButton 			= page.getByRole('button', { name: 'Start!' });
@@ -14,16 +14,15 @@ export class CharacterPage {
   	}
 
 	async setCharacterName(name: string) {
-		await this.nameInput.isVisible();
+		await expect(this.nameInput).toBeVisible();
     	await this.nameInput.fill(name);
   	}
 
 	async selectBuild(buildValue: string) {
+		await expect(this.buildDropdownButton).toBeVisible();
 		await this.buildDropdownButton.click();
 
-		// Valideer dat dropdown open is obv option visible
 		await expect(this.page.getByRole('option', { name: buildValue })).toBeVisible();
-		
 		await this.page.getByRole('option', { name: buildValue }).click();
   	}
 

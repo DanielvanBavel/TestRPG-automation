@@ -1,12 +1,15 @@
 import { Page, Locator, expect } from '@playwright/test';
-import path from 'path';
+import path from 'node:path';
 
 export class AdventurePage {
-	private uploadInput: Locator;
-	private typeInput: Locator;
-	private slider: Locator;
+	private readonly clickerButton: Locator;
+	private readonly uploadInput: Locator;
+	private readonly typeInput: Locator;
+	private readonly slider: Locator;
 
-  	constructor(private page: Page) {
+
+  	constructor(private readonly page: Page) {
+		this.clickerButton	= page.getByRole('button', {name: 'click me'})
 		this.uploadInput 	= page.locator('[data-testid="adventure-uploader"] input[type="file"]');
 		this.typeInput 		= page.locator('[data-testid="adventure-typer"] input');
 		this.slider 		= page.locator('[data-testid="adventure-slider"] [role="slider"]');
@@ -14,9 +17,11 @@ export class AdventurePage {
 
   	async clickButtonFiveTimes() {
     	for (let i = 0; i < 5; i++) {
-      		const button = this.page.getByRole('button', { name: new RegExp(`click me`, 'i') });
+      		const button = this.clickerButton;
       		await button.click();
-    	}		
+    	}
+
+		await expect(this.page.getByText("Great job! You levelled up")).toBeVisible();
   	}
 
  	async uploadDummyFile() {
@@ -31,21 +36,13 @@ export class AdventurePage {
 		await expect(this.page.getByText("Dolar sit amet!")).toBeVisible();
 	}
 
-	async slideToRight() {
-		const box = await this.slider.boundingBox();
-		if (!box) throw new Error('Slider thumb not found');
-
-		const startX = box.x + box.width / 2;
-		const startY = box.y + box.height / 2;
-
-		// Sleep het bolletje precies 487 pixels naar rechts
-		await this.page.mouse.move(startX, startY);
-		await this.page.mouse.down();
-		await this.page.mouse.move(startX + 487, startY, { steps: 10 });
-		await this.page.mouse.up();
+	async slideToMaximum() {
+		await this.page.locator('.absolute.h-full').click();
 
 		// Validatie: controleer of de waarde nu echt 100 is
 		await expect(this.slider).toHaveAttribute('aria-valuenow', '100');
+
+		await expect(this.page.getByText("Slid to the next level!")).toBeVisible();
 	}
 
 	async expertLevelReached() {
